@@ -14,6 +14,9 @@ class Decode:
             'SB': {'000':'beq'}
         }
     
+    def getNext():
+        pass
+
     def decode(self, instruction):
         opcode = instruction[-7:]
         opcode_type = ''
@@ -34,23 +37,23 @@ class Decode:
         
         if opcode_type == 'I':
             func = self.instr_map['I'][instruction[-15:-12]]
-            rd = self.rf.read_reg(int(instruction[-12:-7], 2))
-            rs1 = self.rf.read_reg(int(instruction[-20:-15], 2))
+            rd = int(instruction[-12:-7], 2)
+            rs1 = int(instruction[-20:-15], 2)
             offset = instruction[-32:-20]
         elif opcode_type == 'R':
             func = self.instr_map['R'][instruction[-32:-25]+instruction[-15:-12]]
-            rd = self.rf.read_reg(int(instruction[-12:-7], 2))
-            rs1 = self.rf.read_reg(int(instruction[-20:-15], 2))
-            rs2 = self.rf.read_reg(int(instruction[-25:-20], 2))
+            rd = int(instruction[-12:-7], 2)
+            rs1 = int(instruction[-20:-15], 2)
+            rs2 = int(instruction[-25:-20], 2)
         elif opcode_type == 'S':
             func = self.instr_map['S'][instruction[-15:-12]]
-            rs1 = self.rf.read_reg(int(instruction[-20:-15], 2))
-            rs2 = self.rf.read_reg(int(instruction[-25:-20], 2))
+            rs1 = int(instruction[-20:-15], 2)
+            rs2 = int(instruction[-25:-20], 2)
             offset = instruction[-32:-25]+instruction[-12:-7]
         else:
             func = self.instr_map['SB'][instruction[-15:-12]]
-            rs1 = self.rf.read_reg(int(instruction[-20:-15], 2))
-            rs2 = self.rf.read_reg(int(instruction[-25:-20], 2))
+            rs1 = int(instruction[-20:-15], 2)
+            rs2 = int(instruction[-25:-20], 2)
             offset = instruction[-32:-25]+instruction[-12:-7]
         
         return (opcode_type, func, rd, rs1, rs2, offset)

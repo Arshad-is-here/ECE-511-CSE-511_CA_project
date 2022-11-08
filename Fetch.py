@@ -7,5 +7,10 @@ class Fetch:
         self.imem = imem
 
     def fetch(self, PC):
-        return self.imem.read_instr(PC)
+        self.instruction = self.imem.read_instr(PC)
+
+    def fetchToDecode(self):
+        return self.instruction
+
+    
 

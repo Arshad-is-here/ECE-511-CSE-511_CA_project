@@ -10,8 +10,8 @@ class InstructionMemory:
             for line in imem:
                 self.mem.append(imem)
     
-    def read_instr(self, PC):
-        return self.mem[PC]
+    def read_instr(self, addr):
+        return self.mem[addr]
     
     def dump(self):
         return self.mem

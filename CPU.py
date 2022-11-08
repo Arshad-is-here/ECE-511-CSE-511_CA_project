@@ -16,3 +16,8 @@ class CPU:
         self.rf = RegisterFile()
         self.F = Fetch(self.imem)
         self.D = Decode(self.rf)
+        self.X = Execute()
+        self.M = Memory(self.dmem)
+        self.W = WriteBack()
+    
+    def 

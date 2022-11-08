@@ -42,7 +42,7 @@ class CPU:
             # Fetch
             self.F.fetch(self.PC)
             # Decode
-            (opcode_type, func, rd, rs1, rs2, offset) = self.D.decode(f2d)
+            (opcode_type, func, rd, rs1, rs2, offset) = self.D.decode()
 
             # Execute
 

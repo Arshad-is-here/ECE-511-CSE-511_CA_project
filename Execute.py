@@ -6,7 +6,6 @@ class Execute:
         self.func = 0
         self.rs1 = 0
         self.rs2 = 0
-        self.imm = 0
         self.offset = 0
         self.rd = 0
         self.x = 0

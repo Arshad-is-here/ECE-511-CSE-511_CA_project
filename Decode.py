@@ -20,7 +20,11 @@ class Decode:
         self.rd = ''
         self.offset = ''
         self.func = ''
-
+        self.instruction = ''
+        
+    def storeNext(self, instruction):
+        self.instruction = instruction
+        
     def decode(self, instruction):
         self.opcode = instruction[-7:]
 

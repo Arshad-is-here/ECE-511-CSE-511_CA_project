@@ -12,7 +12,12 @@ class Execute:
         self.pc = 0
 
     def execute_compute(self, D):
-        (self.opcode_type, self.func, self.rd, self.rs1, self.rs2, self.offset) = D.decodeToExecute()
+        self.opcode_type = D[0]
+        self.func = D[1]
+        self.rd = D[2]
+        self.rs1 = D[3]
+        self.rs2 = D[4]
+        self.offset = D[5]
 
         if self.opcode_type == 'R':
             #add

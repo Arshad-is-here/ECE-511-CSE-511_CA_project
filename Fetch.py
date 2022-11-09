@@ -1,7 +1,8 @@
 from InstructionMemory import InstructionMemory
 
+
 class Fetch:
-    
+
     def __init__(self, imem):
         self.instruction = ''
         self.imem = imem
@@ -12,5 +13,4 @@ class Fetch:
     def fetchToDecode(self):
         return self.instruction
 
-    
 

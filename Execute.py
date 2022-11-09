@@ -1,59 +1,71 @@
-class Decode:
+class Execute:
 
-    def __init__(self):
-        self.opcode_map = {'0010011': 'I', '0110011': 'R', '0100011': 'S', '1100011': 'SB', '0000011' : 'L'}
-        self.instr_map = {
-            'I': {'000': 'addi'},
-            'R': {
-                '0000000000': 'add', '0100000000': 'sub',
-                '0000000001': 'sll', '0100000101': 'sra',
-                '0000000110': 'or', '0000000111': 'and'
-            },
-            'S': {'010': 'sw'},
-            'SB': {'000': 'beq'},
-            'L': {'010': 'lw'}
-        }
-        self.opcode = ''
+    def __init__(self, rf):
+        self.rf= rf
         self.opcode_type = ''
+        self.func = ''
         self.rs1 = ''
         self.rs2 = ''
-        self.rd = ''
         self.offset = ''
-        self.func = ''
+        self.rd = ''
+        self.x = ''
+        self.pc = -1
         self.instruction = ''
+        self.branchTaken = False
 
-    def decode(self, instruction):
-        self.instruction = instruction
-        if self.instruction != '':
-            self.opcode = self.instruction[-8:-1]
+    def execute_compute(self, D, pc):
+        if D[0] != '' or D[1] != '' or D[2] != '' or D[3] != '' or D[4] != '' or D[5] != '' :
+            self.opcode_type = D[0]
+            self.func = D[1]
+            self.rd = D[2]
+            self.rs1 = D[3]
+            self.rs2 = D[4]
+            self.offset = D[5]
+            self.instruction = D[6]
+            print(self.offset)
+            if self.opcode_type == 'R':
+                #add
+                if self.func == 'add':
+                    self.x = self.rf.read_reg(self.rs1) + self.rf.read_reg(self.rs2)
 
-            self.opcode_type = self.opcode_map[self.opcode]
+                #sub
+                elif self.func == 'sub':
+                    self.x = self.rf.read_reg(self.rs1) - self.rf.read_reg(self.rs2)
 
-            if self.opcode_type == 'I':
-                self.func = self.instr_map['I'][self.instruction[-15 - 1:-12 - 1]]
-                self.rd = int(self.instruction[-12 - 1:-7 - 1], 2)
-                self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
-                self.offset = self.instruction[-32 - 1:-20 - 1]
-            if self.opcode_type == 'L':
-                self.func = self.instr_map['L'][self.instruction[-15 - 1:-12 - 1]]
-                self.rd = int(self.instruction[-12 - 1:-7 - 1], 2)
-                self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
-                self.offset = self.instruction[-32 - 1:-20 - 1]    
-            elif self.opcode_type == 'R':
-                self.func = self.instr_map['R'][self.instruction[-32 - 1:-25 - 1] + self.instruction[-15 - 1:-12 - 1]]
-                self.rd = int(self.instruction[-12 - 1:-7 - 1], 2)
-                self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
-                self.rs2 = int(self.instruction[-25 - 1:-20 - 1], 2)
-            elif self.opcode_type == 'S':
-                self.func = self.instr_map['S'][self.instruction[-15 - 1:-12 - 1]]
-                self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
-                self.rs2 = int(self.instruction[-25 - 1:-20 - 1], 2)
-                self.offset = self.instruction[-32 - 1:-25 - 1] + self.instruction[-12 - 1:-7 - 1]
-            else:
-                self.func = self.instr_map['SB'][self.instruction[-15 - 1:-12 - 1]]
-                self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
-                self.rs2 = int(self.instruction[-25 - 1:-20 - 1], 2)
-                self.offset = self.instruction[-32 - 1:-25 - 1] + self.instruction[-12 - 1:-7 - 1]
+                #sll
+                elif self.func == 'sll':
+                    self.x = self.rf.read_reg(self.rs1) << self.rf.read_reg(self.rs2)
 
-    def decodeToExecute(self):
-        return (self.opcode_type, self.func, self.rd, self.rs1, self.rs2, self.offset, self.instruction)
+                #sra
+                elif self.func == 'sra':
+                    self.x = self.rf.read_reg(self.rs1) >> self.rf.read_reg(self.rs2)
+
+                #or
+                elif self.func == 'or':
+                    self.x = self.rf.read_reg(self.rs1) | self.rf.read_reg(self.rs2)
+
+                #and
+                elif self.func == 'and':
+                    self.x = self.rf.read_reg(self.rs1) & self.rf.read_reg(self.rs2)
+
+                self.pc = pc
+
+            elif self.opcode_type == 'I':
+                #addi
+                if self.func == "addi":
+                    self.x = self.rf.read_reg(self.rs1) + int(self.offset, 2)
+                self.pc = pc
+
+            elif self.opcode_type == 'SB':
+                #beq
+                if self.func == "beq":
+                    if self.rf.read_reg(self.rs1) == self.rf.read_reg(self.rs2):
+                        self.pc += self.offset
+                        self.branchTaken = True
+                    else:
+                        self.branchTaken = False
+                        self.pc = pc
+
+
+    def executeToMemory(self):
+        return self.x, self.rd, self.pc, self.offset, self.func, self.rs1, self.rs2, self.instruction, self.branchTaken

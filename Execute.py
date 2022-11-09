@@ -9,11 +9,11 @@ class Execute:
         self.offset = ''
         self.rd = ''
         self.x = ''
-        self.pc = ''
-        self.instruction=''
+        self.pc = -1
+        self.instruction = ''
+        self.branchTaken = False
 
-    def execute_compute(self, D):
-        #if D[0] != '' and D[1] != '' and D[2] != '' and D[3] != '' and D[4] != '' and D[5] != '' :
+    def execute_compute(self, D, pc):
         if D[0] != '' or D[1] != '' or D[2] != '' or D[3] != '' or D[4] != '' or D[5] != '' :
             self.opcode_type = D[0]
             self.func = D[1]
@@ -30,7 +30,7 @@ class Execute:
 
                 #sub
                 elif self.func == 'sub':
-                    self.x = self.rf.read_reg(self.rs1) + self.rf.read_reg(self.rs2)
+                    self.x = self.rf.read_reg(self.rs1) - self.rf.read_reg(self.rs2)
 
                 #sll
                 elif self.func == 'sll':
@@ -48,16 +48,24 @@ class Execute:
                 elif self.func == 'and':
                     self.x = self.rf.read_reg(self.rs1) & self.rf.read_reg(self.rs2)
 
+                self.pc = pc
+
             elif self.opcode_type == 'I':
                 #addi
                 if self.func == "addi":
                     self.x = self.rf.read_reg(self.rs1) + int(self.offset, 2)
+                self.pc = pc
 
             elif self.opcode_type == 'SB':
                 #beq
                 if self.func == "beq":
                     if self.rf.read_reg(self.rs1) == self.rf.read_reg(self.rs2):
                         self.pc += self.offset
+                        self.branchTaken = True
+                    else:
+                        self.branchTaken = False
+                        self.pc = pc
+
 
     def executeToMemory(self):
-        return self.x, self.rd, self.pc, self.offset, self.func, self.rs1, self.rs2
+        return self.x, self.rd, self.pc, self.offset, self.func, self.rs1, self.rs2, self.branchTaken

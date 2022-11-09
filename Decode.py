@@ -34,11 +34,11 @@ class Decode:
                 self.rd = int(self.instruction[-12 - 1:-7 - 1], 2)
                 self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
                 self.offset = self.instruction[-32 - 1:-20 - 1]
-            if self.opcode_type == 'L':
+            elif self.opcode_type == 'L':
                 self.func = self.instr_map['L'][self.instruction[-15 - 1:-12 - 1]]
                 self.rd = int(self.instruction[-12 - 1:-7 - 1], 2)
                 self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
-                self.offset = self.instruction[-32 - 1:-20 - 1]    
+                self.offset = self.instruction[-32 - 1:-20 - 1]
             elif self.opcode_type == 'R':
                 self.func = self.instr_map['R'][self.instruction[-32 - 1:-25 - 1] + self.instruction[-15 - 1:-12 - 1]]
                 self.rd = int(self.instruction[-12 - 1:-7 - 1], 2)

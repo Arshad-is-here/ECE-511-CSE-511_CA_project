@@ -24,10 +24,10 @@ class Memory:
             self.instruction = E[7]
 
             if self.func == "lw":
-                self.x = self.dmem[self.rf.read_reg(self.rs1) + int(self.offset, 2)]
+                self.x = self.dmem.read_data(self.rf.read_reg(self.rs1) + int(self.offset, 2))
 
             elif self.func == "sw":
-                self.dmem[self.rf.read_reg(self.rs1) + int(self.offset, 2)] = self.rf.read_reg(self.rs2)
+                self.dmem.write_data(self.rf.read_reg(self.rs1) + int(self.offset, 2), self.rf.read_reg(self.rs2))
 
     def memoryToWriteback(self):
         return self.x, self.rd, self.pc, self.func, self.instruction

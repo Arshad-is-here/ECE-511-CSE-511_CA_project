@@ -15,7 +15,8 @@ class WriteBack:
             self.pc = M[2]
             self.func = M[3]
             self.instruction = M[4]
-            self.rf.write_reg(self.rd, self.x)
+            if self.rd != "":
+                self.rf.write_reg(self.rd, self.x)
 
     def write_Back(self):
         print(self.rf.dump())

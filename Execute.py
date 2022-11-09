@@ -22,7 +22,7 @@ class Execute:
             self.rs2 = D[4]
             self.offset = D[5]
             self.instruction = D[6]
-            print(self.offset)
+
             if self.opcode_type == 'R':
                 #add
                 if self.func == 'add':
@@ -60,7 +60,7 @@ class Execute:
                 #beq
                 if self.func == "beq":
                     if self.rf.read_reg(self.rs1) == self.rf.read_reg(self.rs2):
-                        self.pc += self.offset
+                        self.pc += int(self.offset, 2)
                         self.branchTaken = True
                     else:
                         self.branchTaken = False

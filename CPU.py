@@ -29,7 +29,7 @@ class CPU:
         self.imem.initialize(self.binary)
 
     def simulate(self):
-
+        text = open('log.txt', 'w')
         for cycle in range(1, 10):
 
             # pass on to next stages
@@ -58,11 +58,31 @@ class CPU:
             self.M.memory_compute(x2m)
             self.W.writeback_compute(m2w)
 
+            text.write("---------------------------------------------\n")
+            text.write("Clock cycle is: {}\n".format(cycle))
+            text.write('Fetch: {}\n'.format(self.F.instruction))
+            text.write('Decode: {}\n'.format(self.D.instruction))
+            text.write('Execute: {}\n'.format(self.X.instruction))
+            text.write('Memory: {}\n'.format(self.M.instruction))
+            text.write('WriteBack: {}\n'.format(self.W.instruction))
+
+            if cycle < 5 + len(self.imem.dump()):
+                text.write('Fetch: {}\n'.format(self.F.instruction))
+                text.write('Decode: {}\n'.format(self.D.instruction))
+                text.write('Execute: {}\n'.format(d2x))
+                text.write('Memory: {}\n'.format(x2m))
+                text.write('WriteBack: {}\n'.format(m2w))
+                text.write('Register File: {}\n'.format(self.rf.dump()))
+
             print('Cycle: {}'.format(cycle))
             print('Fetch: {}'.format(self.F.instruction))
             print('Decode: {}'.format(self.D.instruction))
-            # print('Execute: {}'.format(d2x))
+            print('Execute: {}'.format(self.X.instruction))
+            print('Memory: {}'.format(self.M.instruction))
+            print('WriteBack: {}'.format(self.W.instruction))
 
+        text.write("Memory state is: {}\n".format(self.dmem.dump()))
+        text.close()
         print('RF dump from CPU')
         print(self.rf.dump())
 

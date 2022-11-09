@@ -52,8 +52,9 @@ class CPU:
                 self.F.fetch(self.PC)
             else:
                 self.F.instruction = ''
+
             self.D.decode(f2d)
-            self.X.execute_compute(d2x)
+            self.X.execute_compute(d2x, self.PC)
             self.M.memory_compute(x2m)
             self.W.writeback_compute(m2w)
 

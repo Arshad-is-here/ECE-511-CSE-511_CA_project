@@ -30,7 +30,7 @@ class CPU:
 
     def simulate(self):
         text = open('log.txt', 'w')
-        for cycle in range(1, 10):
+        for cycle in range(1, len(self.imem.dump()) + 8):
 
             # pass on to next stages
             f2d = self.F.fetchToDecode()  # F -> D
@@ -73,13 +73,6 @@ class CPU:
                 text.write('Memory: {}\n'.format(x2m))
                 text.write('WriteBack: {}\n'.format(m2w))
                 text.write('Register File: {}\n'.format(self.rf.dump()))
-
-            print('Cycle: {}'.format(cycle))
-            print('Fetch: {}'.format(self.F.instruction))
-            print('Decode: {}'.format(self.D.instruction))
-            print('Execute: {}'.format(self.X.instruction))
-            print('Memory: {}'.format(self.M.instruction))
-            print('WriteBack: {}'.format(self.W.instruction))
 
         text.write("Memory state is: {}\n".format(self.dmem.dump()))
         text.close()

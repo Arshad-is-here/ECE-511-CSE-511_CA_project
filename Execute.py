@@ -1,7 +1,7 @@
 class Execute:
 
     def __init__(self, rf):
-        self.rf = rf
+        self.rf.read_reg = rf
         self.opcode_type = ''
         self.func = ''
         self.rs1 = ''
@@ -23,37 +23,37 @@ class Execute:
             if self.opcode_type == 'R':
                 #add
                 if self.func == 'add':
-                    self.x = self.rf[self.rs1] + self.rf[self.rs2]
+                    self.x = self.rf.read_reg[self.rs1] + self.rf.read_reg[self.rs2]
 
                 #sub
                 elif self.func == 'sub':
-                    self.x = self.rf[self.rs1] + self.rf[self.rs2]
+                    self.x = self.rf.read_reg[self.rs1] + self.rf.read_reg[self.rs2]
 
                 #sll
                 elif self.func == 'sll':
-                    self.x = self.rf[self.rs1] << self.rf[self.rs2]
+                    self.x = self.rf.read_reg[self.rs1] << self.rf.read_reg[self.rs2]
 
                 #sra
                 elif self.func == 'sra':
-                    self.x = self.rf[self.rs1] >> self.rf[self.rs2]
+                    self.x = self.rf.read_reg[self.rs1] >> self.rf.read_reg[self.rs2]
 
                 #or
                 elif self.func == 'or':
-                    self.x = self.rf[self.rs1] | self.rf[self.rs2]
+                    self.x = self.rf.read_reg[self.rs1] | self.rf.read_reg[self.rs2]
 
                 #and
                 elif self.func == 'and':
-                    self.x = self.rf[self.rs1] & self.rf[self.rs2]
+                    self.x = self.rf.read_reg[self.rs1] & self.rf.read_reg[self.rs2]
 
             elif self.opcode_type == 'I':
                 #addi
                 if self.func == "addi":
-                    self.x = self.rf[self.rs1] + int(self.offset, 2)
+                    self.x = self.rf.read_reg[self.rs1] + int(self.offset, 2)
 
             elif self.opcode_type == 'SB':
                 #beq
                 if self.func == "beq":
-                    if self.rf[self.rs1] == self.rf[self.rs2]:
+                    if self.rf.read_reg[self.rs1] == self.rf.read_reg[self.rs2]:
                         self.pc += self.offset
 
     def executeToMemory(self):

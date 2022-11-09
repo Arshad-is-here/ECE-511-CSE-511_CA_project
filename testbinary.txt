@@ -1,0 +1,2 @@
+addi R0 R0 5
+addi R31 R14 9

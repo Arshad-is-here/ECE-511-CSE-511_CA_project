@@ -16,38 +16,54 @@ class CPU:
         self.dmem = DataMemory(access_latency=dMemLatency, size=dMemSize)
         self.rf = RegisterFile()
         self.F = Fetch(self.imem)
-        self.D = Decode(self.rf)
-        self.X = Execute()
-        self.M = Memory(self.dmem)
-        self.W = WriteBack()
+        self.D = Decode()
+        self.X = Execute(self.rf)
+        self.M = Memory(self.rf, self.dmem)
+        self.W = WriteBack(self.rf)
         self.binary = binary
-        self.PC = 0
+        self.PC = -1
+        self.branchTaken = False
     
-    def initialize(self):
+    def initBinary(self):
         self.imem.initialize(self.binary)
-
 
     def simulate(self):
         
-        for cycle in range(1,100):
+        for cycle in range(1,101):
+            
+            # pass on to next stages
+            f2d = self.F.fetchToDecode()    # F -> D
+            d2x = self.D.decodeToExecute()  # D -> X
+            x2m = self.X.executeToMemory()  # X -> M
+            m2w = self.M.memoryToWriteback()    # M -> W 
 
-            # F -> D
-            f2d = self.F.fetchToDecode()
-            # D -> X
-            d2x = self.D.decodeToExecute()
-            # X -> M
+            self.branchTaken = x2m[-1]
+    
+            if self.branchTaken:
+                self.PC = x2m[2]
+                self.branchTaken = False
+            else:
+                self.PC = self.PC + 1
+            
+            # run the pipeline stages          
+            if self.PC < len(self.imem.dump()):  
+                self.F.fetch(self.PC)
+            else:
+                self.F.instruction = ''
+            self.D.decode(f2d)
+            self.X.execute_compute(d2x)
+            self.M.memory_compute(x2m)  
+            self.rf = self.W.writeback_compute(m2w)
 
-            # M -> W
+            print('Cycle: {}'.format(cycle))
+            print('Fetch: {}'.format(self.F.instruction))
+        
+        print('RF dump from CPU')
+        print(self.rf.dump())
 
-            # Fetch
-            self.F.fetch(self.PC)
-            # Decode
-            (opcode_type, func, rd, rs1, rs2, offset) = self.D.decode()
-
-            # Execute
-
-            # Memory
-
-            # WriteBack
-
+system = CPU('testfile.txt',0,512,0,512)
+system.initBinary()
+system.simulate()
+            
+            
 

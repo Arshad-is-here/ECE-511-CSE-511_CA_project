@@ -1,6 +1,7 @@
 class Decode:
 
     def __init__(self):
+        self.opcode_map = {'0010011':'I', '0110011':'R', '0100011':'S', '1100011':'SB'}
         self.instr_map = {
             'I': {'010': 'lw', '000': 'addi'},
             'R': {
@@ -20,38 +21,31 @@ class Decode:
         self.func = ''
 
     def decode(self, instruction):
-        if instruction != "":
-            self.opcode = instruction[-7:]
+        if instruction != '':
+            self.opcode = instruction[-8:-1]
 
-            if self.opcode == '0000011':
-                self.opcode_type = 'I'
-            elif self.opcode == '0110011':
-                self.opcode_type = 'R'
-            elif self.opcode == '0100011':
-                self.opcode_type = 'S'
-            else:
-                self.opcode_type = 'SB'
+            self.opcode_type = self.opcode_map[self.opcode]
 
             if self.opcode_type == 'I':
-                self.func = self.instr_map['I'][instruction[-15:-12]]
-                self.rd = int(instruction[-12:-7], 2)
-                self.rs1 = int(instruction[-20:-15], 2)
-                self.offset = instruction[-32:-20]
+                self.func = self.instr_map['I'][instruction[-15-1:-12-1]]
+                self.rd = int(instruction[-12-1:-7-1], 2)
+                self.rs1 = int(instruction[-20-1:-15-1], 2)
+                self.offset = instruction[-32-1:-20-1]
             elif self.opcode_type == 'R':
-                self.func = self.instr_map['R'][instruction[-32:-25] + instruction[-15:-12]]
-                self.rd = int(instruction[-12:-7], 2)
-                self.rs1 = int(instruction[-20:-15], 2)
-                self.rs2 = int(instruction[-25:-20], 2)
+                self.func = self.instr_map['R'][instruction[-32-1:-25-1] + instruction[-15-1:-12-1]]
+                self.rd = int(instruction[-12-1:-7-1], 2)
+                self.rs1 = int(instruction[-20-1:-15-1], 2)
+                self.rs2 = int(instruction[-25-1:-20-1], 2)
             elif self.opcode_type == 'S':
-                self.func = self.instr_map['S'][instruction[-15:-12]]
-                self.rs1 = int(instruction[-20:-15], 2)
-                self.rs2 = int(instruction[-25:-20], 2)
-                self.offset = instruction[-32:-25] + instruction[-12:-7]
+                self.func = self.instr_map['S'][instruction[-15-1:-12-1]]
+                self.rs1 = int(instruction[-20-1:-15-1], 2)
+                self.rs2 = int(instruction[-25-1:-20-1], 2)
+                self.offset = instruction[-32-1:-25-1] + instruction[-12-1:-7-1]
             else:
-                self.func = self.instr_map['SB'][instruction[-15:-12]]
-                self.rs1 = int(instruction[-20:-15], 2)
-                self.rs2 = int(instruction[-25:-20], 2)
-                self.offset = instruction[-32:-25] + instruction[-12:-7]
+                self.func = self.instr_map['SB'][instruction[-15-1:-12-1]]
+                self.rs1 = int(instruction[-20-1:-15-1], 2)
+                self.rs2 = int(instruction[-25-1:-20-1], 2)
+                self.offset = instruction[-32-1:-25-1] + instruction[-12-1:-7-1]
 
     def decodeToExecute(self):
         return (self.opcode_type, self.func, self.rd, self.rs1, self.rs2, self.offset)

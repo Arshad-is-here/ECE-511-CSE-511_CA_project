@@ -44,7 +44,6 @@ registers = {"R0": "00000",
 
 labels = {}
 
-
 def encode(instructions):
     inst = instructions[0]
     if inst == "add":
@@ -88,7 +87,7 @@ def encode(instructions):
 
 def main():
     instructions = []
-    with open('testfile.txt') as f:
+    with open('testbinary.txt') as f:
         for inst in f:
             if not inst.isspace():
                 line = inst.replace("\n", "")
@@ -113,7 +112,7 @@ def main():
             binary.append(encode(instr.split()))
         pc += 1
     print(binary)
-    text = open("xyz.txt", "w")
+    text = open('testfile.txt', 'w')
     for element in binary:
         text.write(element + "\n")
     text.close()

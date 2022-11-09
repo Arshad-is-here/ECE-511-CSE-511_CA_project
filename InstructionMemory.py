@@ -6,9 +6,8 @@ class InstructionMemory:
         self.mem = ['' for _ in range(size)]
     
     def initialize(self, filepath):
-        with open(filepath) as imem:
-            for line in imem:
-                self.mem.append(imem)
+        instr = open(filepath, 'r')
+        self.mem = instr.readlines()
     
     def read_instr(self, addr):
         return self.mem[addr]

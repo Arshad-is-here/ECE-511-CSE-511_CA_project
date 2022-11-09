@@ -60,7 +60,7 @@ class Execute:
                 #beq
                 if self.func == "beq":
                     if self.rf.read_reg(self.rs1) == self.rf.read_reg(self.rs2):
-                        self.pc += self.offset
+                        self.pc += int(self.offset, 2)
                         self.branchTaken = True
                     else:
                         self.branchTaken = False

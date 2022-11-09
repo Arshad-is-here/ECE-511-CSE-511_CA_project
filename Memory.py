@@ -12,7 +12,8 @@ class Memory:
         self.pc = ''
 
     def memory_compute(self, E):
-        if E[0] != '' and E[1] != '' and E[2] != '' and E[3] != '' and E[4] != '' and E[5] != '' and E[6] != '':
+        #if E[0] != '' and E[1] != '' and E[2] != '' and E[3] != '' and E[4] != '' and E[5] != '' and E[6] != '':
+        if E[0] != '' or E[1] != '' or E[2] != '' or E[3] != '' or E[4] != '' or E[5] != '' or E[6] != '':
             self.x = E[0]
             self.rd = E[1]
             self.pc = E[2]

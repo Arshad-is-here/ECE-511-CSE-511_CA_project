@@ -29,7 +29,7 @@ class CPU:
 
     def simulate(self):
         
-        for cycle in range(1,101):
+        for cycle in range(1,10):
             
             # pass on to next stages
             f2d = self.F.fetchToDecode()    # F -> D
@@ -57,6 +57,8 @@ class CPU:
 
             print('Cycle: {}'.format(cycle))
             print('Fetch: {}'.format(self.F.instruction))
+            print('Decode: {}'.format(self.D.instruction))
+            #print('Execute: {}'.format(d2x))
         
         print('RF dump from CPU')
         print(self.rf.dump())

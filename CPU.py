@@ -30,6 +30,7 @@ class CPU:
 
     def simulate(self):
         text = open('log.txt', 'w')
+        text.write('NOTE: The register file has been initialized with value 1 so as to make the changes visible to the reader\n')
         for cycle in range(1, len(self.imem.dump()) + 8):
 
             # pass on to next stages
@@ -60,32 +61,36 @@ class CPU:
 
             text.write("---------------------------------------------\n")
             text.write("Clock cycle is: {}\n".format(cycle))
-            text.write('Fetch: {}\n'.format(self.F.instruction))
-            text.write('Decode: {}\n'.format(self.D.instruction))
-            text.write('Execute: {}\n'.format(self.X.instruction))
-            text.write('Memory: {}\n'.format(self.M.instruction))
-            text.write('WriteBack: {}\n'.format(self.W.instruction))
+            if self.F.instruction != '':
+                text.write('Fetch: I{} -> {}\n'.format(self.imem.mem.index(self.F.instruction)+1, self.F.instruction[:-1]))
+            else:
+                text.write('Fetch: \n')
+
+            if self.D.instruction != '':
+                text.write('Decode: I{} -> {}\n'.format(self.imem.mem.index(self.D.instruction)+1, self.D.instruction[:-1]))
+            else:
+                text.write('Decode: \n')
+
+            if self.X.instruction != '':
+                text.write('Execute: I{} -> {}\n'.format(self.imem.mem.index(self.X.instruction)+1, self.X.instruction[:-1]))
+            else:
+                text.write('Execute: \n')
+
+            if self.M.instruction != '':
+                text.write('Memory: I{} -> {}\n'.format(self.imem.mem.index(self.M.instruction)+1, self.M.instruction[:-1]))
+            else:
+                text.write('Memory: \n')
+
+            if self.W.instruction != '':
+                text.write('WriteBack: I{} -> {}\n'.format(self.imem.mem.index(self.W.instruction)+1, self.W.instruction[:-1]))
+            else:
+                text.write('WriteBack: \n')
 
             if cycle < 5 + len(self.imem.dump()):
-                text.write('Fetch: {}\n'.format(self.F.instruction))
-                text.write('Decode: {}\n'.format(self.D.instruction))
-                text.write('Execute: {}\n'.format(d2x))
-                text.write('Memory: {}\n'.format(x2m))
-                text.write('WriteBack: {}\n'.format(m2w))
                 text.write('Register File: {}\n'.format(self.rf.dump()))
 
-            print("Clock cycle is: {}".format(cycle))
-            print('Fetch: {}'.format(self.F.instruction))
-            print('Decode: {}'.format(self.D.instruction))
-            print('Execute: {}'.format(self.X.instruction))
-            print('Memory: {}'.format(self.M.instruction))
-            print('WriteBack: {}'.format(self.W.instruction))
-
-        text.write("Memory state is: {}\n".format(self.dmem.dump()))
+        text.write("Ending data memory state is: {}\n".format(self.dmem.dump()))
         text.close()
-
-        print('RF dump from CPU')
-        print(self.rf.dump())
 
 
 system = CPU('testfile.txt', 0, 512, 0, 512)

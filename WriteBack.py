@@ -19,5 +19,4 @@ class WriteBack:
                 self.rf.write_reg(self.rd, self.x)
 
     def write_Back(self):
-        print(self.rf.dump())
         return self.rf

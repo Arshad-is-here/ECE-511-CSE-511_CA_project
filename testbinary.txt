@@ -1,17 +1,19 @@
 add R0 R0 R1
 addi R31 R14 9
+beq R0 R0 tgt1
 sub R1 R2 R3
 and R4 R9 R6
 or R11 R30 R29
 add R7 R2 R31
-lw R19 0(R22)
+tgt1: lw R19 0(R22)
 sub R5 R0 R10
 addi R15 R15 4
 addi R20 R20 9
+beq R0 R0 tgt2
 add R21 R2 R9
 add R4 R5 R6
 sw R27 8(R28)
 sll R22 R20 R21
-sra R23 R7 R21
+tgt2: sra R23 R7 R21
 add R12 R13 R14
 sub R16 R17 R8

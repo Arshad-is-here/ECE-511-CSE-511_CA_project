@@ -60,7 +60,7 @@ class Execute:
                 #beq
                 if self.func == "beq":
                     if self.rf.read_reg(self.rs1) == self.rf.read_reg(self.rs2):
-                        self.pc += int(self.offset, 2)
+                        self.pc = int(self.offset, 2)
                         self.branchTaken = True
                     else:
                         self.branchTaken = False
@@ -68,4 +68,4 @@ class Execute:
 
 
     def executeToMemory(self):
-        return self.x, self.rd, self.pc, self.offset, self.func, self.rs1, self.rs2, self.instruction, self.branchTaken
+        return [self.x, self.rd, self.pc, self.offset, self.func, self.rs1, self.rs2, self.instruction, self.branchTaken]

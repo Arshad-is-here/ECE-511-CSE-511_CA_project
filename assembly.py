@@ -111,7 +111,7 @@ def main():
         else:
             binary.append(encode(instr.split()))
         pc += 1
-    print(binary)
+    print(labels)
     text = open('testfile.txt', 'w')
     for element in binary:
         text.write(element + "\n")

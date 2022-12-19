@@ -7,7 +7,9 @@ opcode = {"add": "01100",
           "lw": "00000",
           "sw": "01000",
           "sll": "01100",
-          "sra": "01100"}
+          "sra": "01100",
+          "LOADNOC": "01101",
+          "STORENOC": "11111"}
 
 registers = {"R0": "00000",
              "R1": "00001",
@@ -83,6 +85,12 @@ def encode(instructions):
     elif inst == "sra":
         return "01000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "101" + registers[
             instructions[1]] + opcode[inst] + "11"
+    elif inst == "LOADNOC":
+        return format(int(instructions[3]), '012b') + registers[instructions[2]] + "011" + registers[instructions[1]] + \
+               opcode[inst] + "11"
+    elif inst == "STORENOC":
+        return "11111111111111111111111111111111"
+
 
 
 def main():

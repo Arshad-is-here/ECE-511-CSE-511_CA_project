@@ -9,7 +9,7 @@ class Decode:
         """
         @brief      Constructor to create the object of decode stage
         @param      None
-        @return     None
+        @return     The Decode stage
         """
 
         self.opcode_map = {                                             # mapping opcode to the class of instruction
@@ -35,6 +35,7 @@ class Decode:
         self.offset = ''                    # initializing offset 
         self.func = ''                      # initializing intruction function
         self.instruction = ''               # inititalizing instruction
+        self.isStalled = False              # tracks the stall status for Decode
 
     def decode(self, instruction):
 
@@ -73,12 +74,22 @@ class Decode:
                 self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
                 self.rs2 = int(self.instruction[-25 - 1:-20 - 1], 2)
                 self.offset = self.instruction[-32 - 1:-25 - 1] + self.instruction[-12 - 1:-7 - 1]
+                self.rd = ''
 
             else:                                               # if the instruction is of SB type
                 self.func = self.instr_map['SB'][self.instruction[-15 - 1:-12 - 1]]
                 self.rs1 = int(self.instruction[-20 - 1:-15 - 1], 2)
                 self.rs2 = int(self.instruction[-25 - 1:-20 - 1], 2)
                 self.offset = self.instruction[0] + self.instruction[24] + self.instruction[1:7] + self.instruction[20:24]
+                self.rd = ''
+        else:
+            self.opcode = ''                    # initializing opcode
+            self.opcode_type = ''               # initializing the class of opcode
+            self.rs1 = ''                       # initializing source register 1
+            self.rs2 = ''                       # initializing source register 2
+            self.rd = ''                        # initializing destination register
+            self.offset = ''                    # initializing offset 
+            self.func = ''                      # initializing intruction function
 
     def decodeToExecute(self):
 

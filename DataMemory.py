@@ -12,7 +12,7 @@ class DataMemory:
         """
         @brief      Constructor to instantiate data memory
         @param      access_latency: read/write latency of data memory | default: 1
-        @param      size: size of data memory | default: 512
+        @param      size: size of data memory | default: 512 x 4B
         """
 
         self.access_latency = access_latency    # initialize access_latency

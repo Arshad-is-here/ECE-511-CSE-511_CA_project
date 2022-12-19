@@ -40,6 +40,7 @@ class CPU:
         self.binary = binary                                                    # initiating the test binary
         self.PC = -1                                                            # initiating program counter
         self.branchTaken = False                                                # initiating branch status
+        self.D_stalledInstr = ''
 
     def initBinary(self):
 
@@ -78,6 +79,23 @@ class CPU:
             m2w = self.M.memoryToWriteback()            # Memory -> Writeback
             self.rf = self.W.write_Back()               # update the RF using data from writeback stage
 
+            if('' not in [self.X.rd, self.D.rd, self.D.rs1, self.D.rs2]):
+                # STALL LOGIC FOR DECODE
+                if (self.X.rd in [self.D.rd, self.D.rs1, self.D.rs2]) and self.W.rd not in [self.D.rd, self.D.rs1, self.D.rs2]:
+                    self.D.isStalled = True
+                    d2x[-1] = ''
+                elif (self.M.rd in [self.D.rd, self.D.rs1, self.D.rs2]) and self.W.rd not in [self.D.rd, self.D.rs1, self.D.rs2]:
+                    self.D.isStalled = True
+                    d2x[-1] = ''
+                else:
+                    self.D.isStalled = False
+
+                # STALL LOGIC FOR FETCH
+                if self.D.isStalled:
+                    self.F.isStalled = True
+                else:
+                    self.F.isStalled = False
+
             self.branchTaken = x2m[-1]                  # update branch status
 
             if self.branchTaken:                        # if branch taken
@@ -87,22 +105,21 @@ class CPU:
                 f2d = ''                                # kill the instruction in Fetch
                 d2x[-1] = ''                            # kill the instruction in Decode
             else:
-                self.PC = self.PC + 1                   # else, move PC to next instruction
+                if not self.F.isStalled:
+                    self.PC = self.PC + 1               # else, move PC to next instruction
 
             # run the pipeline stages
-            if self.PC < len(self.imem.dump()):         # if instruction memory is not exhausted
-                self.F.fetch(self.PC)                   # fetch new instruction
-            else:
-                self.F.instruction = ''                 # else, stop fetching new instruction
-
-            self.D.decode(f2d)                          # run the decode stage
+            if not self.F.isStalled:
+                if self.PC < len(self.imem.dump()):     # if instruction memory is not exhausted
+                    self.F.fetch(self.PC)               # fetch new instruction
+                else:
+                    self.F.instruction = ''             # else, stop fetching new instruction
+            
+            if not self.D.isStalled:
+                self.D.decode(f2d)                      # run the decode stage
             self.X.execute_compute(d2x, self.PC)        # run the execute stage
             self.M.memory_compute(x2m)                  # run the memory stage 
             self.W.writeback_compute(m2w)               # run the writeback stage
-
-            if self.F.instruction=='' and self.D.instruction=='' and self.X.instruction=='' and \
-                self.M.instruction=='' and self.W.instruction=='':
-                break
 
             # Write the current state of the pipeline to the log file (log.txt)
             text.write("---------------------------------------------\n")
@@ -133,8 +150,7 @@ class CPU:
                 text.write('WriteBack: \n')
 
             # Dumping the Register File at the end of each clock cycle
-            if cycle < 5 + len(self.imem.dump()):
-                text.write('Register File: {}\n'.format(self.rf.dump()))
+            text.write('Register File: {}\n'.format(self.rf.dump()))
 
         # Dumping the data memory at the end of the program execution
         text.write("Ending data memory state is: {}\n".format(self.dmem.dump()))

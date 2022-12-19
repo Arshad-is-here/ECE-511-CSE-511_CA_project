@@ -92,7 +92,6 @@ def encode(instructions):
         return "11111111111111111111111111111111"
 
 
-
 def main():
     instructions = []
     with open('testbinary.txt') as f:

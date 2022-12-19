@@ -11,18 +11,14 @@ __Work plan for final evaluation:__
 __CA Project__ 
 5-Stage Cycle accurate simulator
 
-Team Member Details - 
+__Team Member Details - 
 Pooja Kumari - 2019185
 Shivam Jindal - 2020125
 Anurag Gulati - 2020176
 Arshad Iqbal - 2020180
-
+__
 In this project, we have created a 5-stage cycle accurate simulator of RISC-V CPU. 
 We have used Python in this project. 
-
-4) README to give any necessary details about how to use the simulator and graph
-Plotter
-
 
 We have implemented the Simulator by creating three class which are shown below: 
 

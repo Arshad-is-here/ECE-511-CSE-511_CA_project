@@ -45,51 +45,67 @@ registers = {"R0": "00000",
              "R31": "11111"}
 
 labels = {}
+reginst = 0
+meminst = 0
 
 def encode(instructions):
+    global reginst, meminst
     inst = instructions[0]
     if inst == "add":
+        reginst += 1
         return "00000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "000" + registers[
             instructions[1]] + opcode[inst] + "11"
     elif inst == "sub":
+        reginst += 1
         return "01000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "000" + registers[
             instructions[1]] + opcode[inst] + "11"
     elif inst == "and":
+        reginst += 1
         return "00000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "111" + registers[
             instructions[1]] + opcode[inst] + "11"
     elif inst == "or":
+        reginst += 1
         return "00000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "110" + registers[
             instructions[1]] + opcode[inst] + "11"
     elif inst == "addi":
+        reginst += 1
         return format(int(instructions[3]), '012b') + registers[instructions[2]] + "000" + registers[instructions[1]] + \
                opcode[inst] + "11"
     elif inst == "beq":
+        reginst += 1
         offset = instructions[3]
         offset = labels[offset]
         offset = format(offset, '012b')
         return offset[0] + offset[2:8] + registers[instructions[2]] + registers[instructions[1]] + "000" + offset[8:] + \
                offset[1] + opcode[inst] + "11"
     elif inst == "lw":
+        meminst += 1
         offset = instructions[2].split("(")[0]
         offset = format(int(offset), '012b')
         r1 = instructions[2].split("(")[1].replace(")", "")
         return offset + registers[r1] + "010" + registers[instructions[1]] + opcode[inst] + "11"
     elif inst == "sw":
+        meminst += 1
         offset = instructions[2].split("(")[0]
         offset = format(int(offset), '012b')
         r1 = instructions[2].split("(")[1].replace(")", "")
         return offset[:7] + registers[instructions[1]] + registers[r1] + "010" + offset[7:] + opcode[inst] + "11"
     elif inst == "sll":
+        reginst += 1
         return "00000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "001" + registers[
             instructions[1]] + opcode[inst] + "11"
     elif inst == "sra":
+        reginst += 1
         return "01000" + "00" + registers[instructions[3]] + registers[instructions[2]] + "101" + registers[
             instructions[1]] + opcode[inst] + "11"
     elif inst == "LOADNOC":
+        meminst += 1
         return format(int(instructions[3]), '012b') + registers[instructions[2]] + "011" + registers[instructions[1]] + \
                opcode[inst] + "11"
     elif inst == "STORENOC":
+        meminst += 1
         return "11111111111111111111111111111111"
+
 
 
 def main():
@@ -123,7 +139,12 @@ def main():
     for element in binary:
         text.write(element + "\n")
     text.close()
-    #print(labels)
+
+    text1 = open('numbers.txt', 'w')
+    text1.write(str(reginst) + "\n")
+    text1.write(str(meminst) + "\n")
+    text1.close()
+
 
 
 if __name__ == "__main__":

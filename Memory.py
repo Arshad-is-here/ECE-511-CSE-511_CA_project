@@ -5,24 +5,16 @@ class Memory:
     """
 
     def __init__(self, rf, dmem):
-
-        """
-        @brief      Constructor to instantiate an object of the Memory stage
-        @param      rf: register file (to read the values of rs1 and rs2)
-        @param      dmem: data memory
-        @return     The eXecute stage
-        """
-
-        self.rf = rf                # initializing local register file object
-        self.dmem = dmem            # initializing local data memory object
-        self.func = ''              # initializing the functionality of instruction
-        self.rs1 = ''               # initializing source register 1
-        self.rs2 = ''               # initializing source register 2
-        self.offset = ''            # initializing instruction offset
-        self.rd = ''                # initializing destination register
-        self.x = ''                 # initializing value for destinations
-        self.pc = -1                # initializing local program counter value
-        self.instruction = ''       # initializing instruction
+        self.rf = rf
+        self.dmem = dmem
+        self.func = ''
+        self.rs1 = ''
+        self.rs2 = ''
+        self.offset = ''
+        self.rd = ''
+        self.x = ''
+        self.pc = -1
+        self.instruction = ''
 
     def memory_compute(self, E, mapped):
 
@@ -48,13 +40,13 @@ class Memory:
 
             elif self.func == "sw":     # handling stores
                 self.dmem.write_data(self.rf.read_reg(self.rs1) + int(self.offset, 2), self.rf.read_reg(self.rs2))
-            
+
             elif self.func == "LOADNOC":
-                mapped.write_loadnoc(self.rs1, self.rs2, int(self.offset, 2))
+                mapped.write_reg(self.rs1, self.rs2, int(self.offset, 2))
 
             elif self.func == "STORENOC":
-                mapped.write_storenoc()
-        
+                mapped.write_re(16)
+
         return mapped
 
     def memoryToWriteback(self):

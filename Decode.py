@@ -13,7 +13,7 @@ class Decode:
         """
 
         self.opcode_map = {                                             # mapping opcode to the class of instruction
-                '0010011': 'I', '0110011': 'R', '0100011': 'S', 
+                '0010011': 'I', '0110011': 'R', '0100011': 'S',
                 '1100011': 'SB', '0000011' : 'L', '0110111': 'LNOC', '1111111': 'SNOC'
             }
         self.instr_map = {                                              # mapping the exact instruction using other info
@@ -34,7 +34,7 @@ class Decode:
         self.rs1 = ''                       # initializing source register 1
         self.rs2 = ''                       # initializing source register 2
         self.rd = ''                        # initializing destination register
-        self.offset = ''                    # initializing offset 
+        self.offset = ''                    # initializing offset
         self.func = ''                      # initializing intruction function
         self.instruction = ''               # inititalizing instruction
         self.isStalled = False              # tracks the stall status for Decode
@@ -47,7 +47,7 @@ class Decode:
         @return     None
         """
 
-        self.instruction = instruction  
+        self.instruction = instruction
         if self.instruction != '':                              # if the instruction is not empty, we have to decode it
             self.opcode = self.instruction[-8:-1]               # extracting opcode out of the instruction
 
@@ -99,13 +99,13 @@ class Decode:
             self.rs1 = ''                       # initializing source register 1
             self.rs2 = ''                       # initializing source register 2
             self.rd = ''                        # initializing destination register
-            self.offset = ''                    # initializing offset 
+            self.offset = ''                    # initializing offset
             self.func = ''                      # initializing intruction function
 
     def decodeToExecute(self):
 
         """
-        @brief      Returns the decoded segments from decode stage back to the 
+        @brief      Returns the decoded segments from decode stage back to the
                     CPU for transfering to the execute stage.
         @param      None
         @Returns    tuple containing the relevant information regarding the instruction

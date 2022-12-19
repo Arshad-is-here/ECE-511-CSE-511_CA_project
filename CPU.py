@@ -30,6 +30,7 @@ class CPU:
         """
 
         self.imem = InstructionMemory(access_delay=iMemLatency, size=iMemSize)  # initiating instruction memory
+        self.iMemLatency = iMemLatency
         self.dmem = DataMemory(access_latency=dMemLatency, size=dMemSize)       # initiating data memory
         self.rf = RegisterFile()                                                # initiating register file
         self.mapped = MemoryMappedRegisters(self.rf)                            # initializing memory mapped registers
@@ -39,7 +40,7 @@ class CPU:
         self.M = Memory(self.rf, self.dmem)                                     # initiating memory stage
         self.W = WriteBack(self.rf)                                             # initiating writeback stage
         self.binary = binary                                                    # initiating the test binary
-        self.PC = -1                                                            # initiating program counter
+        self.PC = 0                                                             # initiating program counter
         self.branchTaken = False                                                # initiating branch status
 
     def initBinary(self):
@@ -65,6 +66,7 @@ class CPU:
         text.write('NOTE: The register file has been initialized with value 1 so as to make the changes visible to the reader\n')
 
         nStalls = 0
+        x = self.iMemLatency + 1
         for cycle in range(1, len(self.imem.dump()) + 8):
 
             # Each iteration of the loop is considered as a single clock cycle. The
@@ -74,7 +76,7 @@ class CPU:
             # state of the pipeline in log.txt
 
             # pass on to next stages
-            f2d = self.F.fetchToDecode()                # Fetch -> Decode
+            f2d = self.F.fetchToDecode()            # Fetch -> Decode
             d2x = self.D.decodeToExecute()              # Decode -> eXecute
             x2m = self.X.executeToMemory()              # eXecute -> Memory
             m2w = self.M.memoryToWriteback()            # Memory -> Writeback
@@ -117,9 +119,11 @@ class CPU:
                 f2d = ''                                # kill the instruction in Fetch
                 d2x[-1] = ''                            # kill the instruction in Decode
             else:
-                if not self.F.isStalled:
+                if not self.F.isStalled and cycle%x == 0:
                     self.PC = self.PC + 1               # else, move PC to next instruction
-
+                else:
+                    f2d = ''
+            
             # run the pipeline stages
             if not self.F.isStalled:
                 if self.PC < len(self.imem.dump()):     # if instruction memory is not exhausted
@@ -173,6 +177,6 @@ class CPU:
         text.close()
 
 
-system = CPU('testfile.txt', 0, 512, 0, 512)
+system = CPU('testfile.txt', 0, 512, 2, 512)
 system.initBinary()
 system.simulate()
